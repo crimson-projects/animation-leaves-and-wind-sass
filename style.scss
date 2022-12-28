@@ -1,0 +1,144 @@
+body {
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background: linear-gradient(180deg, #111, #1f103a);
+	&:before {
+		content: "Leaves blowing in the wind";
+		font-family: Arial, Helvetica, serif;
+		font-size: 12px;
+		position: absolute;
+		width: 100%;
+		text-align: center;
+		bottom: 18px;
+		color: #fff4;
+		z-index: -1;
+	}
+}
+
+.wind {
+	position: absolute;
+	width: 100vw;
+	height: 120vh;
+	top: -10vw;
+}
+
+.direction {
+	float: left;
+	width: 50%;
+	height: 100%;
+	&:after {
+		content: "\27A4";
+    position: fixed;
+		z-index: 3;
+    left: calc(50% - 30px);
+    bottom: 45px;
+    color: #fff8;
+    font-size: 20px;
+    border: 2px dashed #fff3;
+    border-radius: 100%;
+    width: 60px;
+    height: 60px;
+    box-sizing: border-box;
+    padding: 13px 0;
+    text-align: center;
+    line-height: 30px;
+    transition: all 0.5s ease 0s;
+		animation: wind-right 0.5s ease 0s 1, vibration-right 0.1s ease 0.5s infinite;
+	}
+	&:hover {
+		&:after {
+    	transition: all 0.5s ease 0s;
+			animation: wind-left 0.5s ease 0s 1, vibration-left 0.1s ease 0.5s infinite;
+		}
+		& ~ .leaf {
+			left: -5vmin;
+		}
+	}
+}
+
+@keyframes vibration-left {
+	0%, 100% { transform: rotate(-181deg); }
+	50% { transform: rotate(-179deg); }
+}
+@keyframes wind-left {
+	50% { transform: rotate(-180deg); }
+}
+
+@keyframes wind-right {
+	50% { transform: rotate(1deg); }
+}
+@keyframes vibration-right {
+	0%, 100% { transform: rotate(-1deg); }
+	50% { transform: rotate(1deg); }
+}
+
+
+.leaf {
+	$leafs: 200;
+	position: absolute;
+	left: -5vmin; /*top*/
+	@for $i from 1 through $leafs {
+		&:nth-child(#{$i}) {
+			$speed: random(5) * 6.1s;
+			filter: hue-rotate(random(10) * 4deg) brightness(random(5) * 0.2);
+			top: random(1200) * 0.1vh;
+			animation: fall-#{$i} $speed (random(25) * -1.5s) ease-in infinite;
+			span {
+				animation: spin (random(10) * 0.75s) ease 0s infinite alternate;
+				filter: drop-shadow(0 0 (random(4) * 0.5px) brown);
+				$rand: random(5) * 0.35vmin;
+				width: $rand;
+				height: $rand;
+			}
+		}
+		@keyframes fall-#{$i} {
+			#{percentage( random(50) / 600 )} {
+				transform: translate(0);
+			}
+			to {
+				transform: translate(calc(100vw + 5vmin));
+				top: random(1200) * 0.1vh;
+			}
+		}
+	}
+	span {
+		display: block;
+		color: #fff;
+		float: left;
+		background: linear-gradient( 45deg, #ff6600 0 48%, #333 48% 52%, #ff5722 0 52%);
+		border-radius: 20% 100%;
+		position: relative;
+		&:before {
+			content: "";
+			position: absolute;
+			width: 10%;
+			height: 100%;
+			background: brown;
+			transform: rotate(-45deg) translateY(-30%);
+			transform-origin: left top;
+		}
+	}
+	&:nth-child(4n+2) span {
+	border-radius: 40%;
+}
+	&:nth-child(8n+3) span {
+		background: linear-gradient( 45deg, #ff6600 0 48%, #333 48% 52%, #fff0 55% 100%);
+}
+	/*
+	&:nth-child(4n+4) span:before {
+		content: "\274B";
+	}
+	*/
+}
+
+@keyframes spin {
+	  0% { transform: rotateY(0deg) rotateX(360deg); }
+	100% { transform: rotateY(360deg) rotateX(0deg); }
+}
+
+.direction:hover ~ .leaf {
+	animation-direction: reverse !important;
+}
